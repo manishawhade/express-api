@@ -1,13 +1,15 @@
 const db = require("../models");
 const bcrypt = require("bcryptjs");
 const User = db.user;
+const jwt = require("jsonwebtoken")
+const config = require('../config/user.config');
 const getUsers = (req, res) => {
   User.find({})
     .then((result) => {
       res.status(200).json({ userList: result });
     })
     .catch((err) => {
-      res.status(500).json({ message: `Registration failed. Error => ${err}` });
+      res.status(500).json({ message: `Error => ${err}` });
     });
 };
 
@@ -35,7 +37,7 @@ const register = (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const user = await User.findOne({ name: req.body.name });
+    const user = await User.findOne({ email: req.body.email });
     if (user) {
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
@@ -47,12 +49,12 @@ const login = async (req, res) => {
         return;
       }
 
+      let token = jwt.sign(user.email,config.secret)
+
       const { id, name, email } = user;
       res.status(200).json({
         message: {
-          id,
-          name,
-          email,
+          token: token
         },
       });
     } else {

@@ -2,13 +2,15 @@ const express = require("express");
 require("dotenv").config();
 const userRouter = require("./app/routes/user.routes");
 const db = require("./app/models");
+const config = require('./app/config/db.config');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//MongoDB conection
 db.mongoose
-  .connect(process.env.MONGODB_URL)
+  .connect(config.url)
   .then((result) => {
     console.log("Connected to MongoDB");
   })
