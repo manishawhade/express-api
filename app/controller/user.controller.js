@@ -3,8 +3,10 @@ const bcrypt = require("bcryptjs");
 const User = db.user;
 const jwt = require("jsonwebtoken");
 const config = require("../config/user.config");
+
 const getUsers = (req, res) => {
   User.find({})
+    .populate("purchasedCourse")
     .then((result) => {
       res.status(200).json({ userList: result });
     })
@@ -24,7 +26,8 @@ const register = (req, res) => {
     user
       .save()
       // User.insertMany([data])
-      .then(() => {
+      .then((usr) => {
+        console.log("usr => ", usr._id);
         console.log("User added successfully.");
         res
           .status(200)
@@ -52,7 +55,10 @@ const login = async (req, res) => {
         return;
       }
 
-      let token = jwt.sign({ id: user._id, email: user.email }, config.secret);
+      let token = jwt.sign(
+        { id: user._id, email: user.email, role: user.role },
+        config.secret
+      );
 
       res.status(200).json({
         message: {
@@ -86,6 +92,7 @@ const deleteUser = (req, res) => {
       res.status(500).json({ message: `Delete user failed. ${err}` });
     });
 };
+
 module.exports = {
   getUsers,
   register,

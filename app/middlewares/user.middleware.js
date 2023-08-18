@@ -1,7 +1,8 @@
 const db = require("../models");
 const User = db.user;
-const config = require("../config/user.config")
-const jwt = require("jsonwebtoken")
+const config = require("../config/user.config");
+const jwt = require("jsonwebtoken");
+
 const checkIfUserAlreadyExists = async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
@@ -26,7 +27,19 @@ const verifyToken = async (req, res, next) => {
     next();
   });
 };
+
+const checkIsAdmin = (req, res, next) => {
+  if(req.user.role === "admin"){
+    next()
+  }else{
+    return res.status(401).send({
+      message: "Not admin user.",
+    });
+  }
+};
+
 module.exports = {
   checkIfUserAlreadyExists,
   verifyToken,
+  checkIsAdmin,
 };

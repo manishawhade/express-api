@@ -1,4 +1,4 @@
 const config = {
-  secret: "bezkoder-secret-key",
+  secret: process.env.SECRET_KEY,
 };
 module.exports = config;

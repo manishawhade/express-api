@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const userRouter = require("./app/routes/user.routes");
+const productRouter = require("./app/routes/product.routes");
 const db = require("./app/models");
 const config = require('./app/config/db.config');
 
@@ -20,6 +21,7 @@ db.mongoose
 
 //Routes
 app.use("/users", userRouter);
+app.use("/product", productRouter);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
