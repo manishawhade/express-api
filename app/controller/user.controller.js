@@ -1,8 +1,8 @@
 const db = require("../models");
 const bcrypt = require("bcryptjs");
 const User = db.user;
-const jwt = require("jsonwebtoken")
-const config = require('../config/user.config');
+const jwt = require("jsonwebtoken");
+const config = require("../config/user.config");
 const getUsers = (req, res) => {
   User.find({})
     .then((result) => {
@@ -20,7 +20,10 @@ const register = (req, res) => {
       ...req.body,
       password: hashPassword,
     };
-    User.insertMany([data])
+    const user = new User(data);
+    user
+      .save()
+      // User.insertMany([data])
       .then(() => {
         console.log("User added successfully.");
         res
@@ -49,12 +52,11 @@ const login = async (req, res) => {
         return;
       }
 
-      let token = jwt.sign(user.email,config.secret)
+      let token = jwt.sign({ id: user._id, email: user.email }, config.secret);
 
-      const { id, name, email } = user;
       res.status(200).json({
         message: {
-          token: token
+          token: token,
         },
       });
     } else {
@@ -65,8 +67,29 @@ const login = async (req, res) => {
   }
 };
 
+const update = (req, res) => {
+  User.findByIdAndUpdate(req.user.id, req.body)
+    .then(() => {
+      res.status(200).json({ message: `User updated successfully.` });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: `Update failed. ${err}` });
+    });
+};
+
+const deleteUser = (req, res) => {
+  User.deleteOne({ email: req.user.email })
+    .then(() => {
+      res.status(200).json({ message: `User deleted successfully.` });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: `Delete user failed. ${err}` });
+    });
+};
 module.exports = {
   getUsers,
   register,
   login,
+  update,
+  deleteUser,
 };

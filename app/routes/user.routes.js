@@ -14,4 +14,8 @@ router.post("/register", checkIfUserAlreadyExists, controller.register);
 
 router.post("/login", controller.login);
 
+router.post("/update", verifyToken, controller.update);
+
+router.post("/delete", verifyToken, controller.deleteUser);
+
 module.exports = router;

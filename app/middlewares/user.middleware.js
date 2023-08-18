@@ -22,7 +22,7 @@ const verifyToken = async (req, res, next) => {
         message: "Unauthorized!",
       });
     }
-    console.log("decoded_token => ",decoded);
+    req.user = decoded;
     next();
   });
 };
