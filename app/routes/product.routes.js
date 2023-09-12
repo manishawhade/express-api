@@ -1,15 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controller/product.controller");
-const {checkIsAdmin, verifyToken} = require("../middlewares/user.middleware")
+const { checkIsAdmin, verifyToken } = require("../middlewares/user.middleware");
 
-router.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
-    next();
-});
+router.use(verifyToken);
 
-router.get("/getProducts", verifyToken, controller.getProducts);
+router.get("/getProducts", controller.getProducts);
 
-router.post("/createProduct", verifyToken, checkIsAdmin, controller.createProduct);
+router.post("/createProduct", checkIsAdmin, controller.createProduct);
+
+router.post("/updateProduct", checkIsAdmin, controller.updateProduct);
+
+router.post("/deleteProduct", checkIsAdmin, controller.deleteProduct);
 
 module.exports = router;

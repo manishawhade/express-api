@@ -25,7 +25,6 @@ const register = (req, res) => {
     const user = new User(data);
     user
       .save()
-      // User.insertMany([data])
       .then((usr) => {
         console.log("usr => ", usr._id);
         console.log("User added successfully.");

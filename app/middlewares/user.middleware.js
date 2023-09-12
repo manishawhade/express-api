@@ -33,7 +33,7 @@ const checkIsAdmin = (req, res, next) => {
     next()
   }else{
     return res.status(401).send({
-      message: "Not admin user.",
+      message: "Operation limited to admin user.",
     });
   }
 };
